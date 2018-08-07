@@ -174,7 +174,7 @@ If you use multiline logging with raw, it's recommended to json encode the Data 
 * `RETRY_COUNT` - how many times to retry a broken socket (default 10)
 * `ROUTESPATH` - path to routes (default `/mnt/routes`)
 * `SYSLOG_DATA` - datum for data field (default `{{.Data}}`)
-* `SYSLOG_FORMAT` - syslog format to emit, either `rfc3164` or `rfc5424` (default `rfc5424`)
+* `SYSLOG_FORMAT` - syslog format to emit, either `rfc3164`, `rfc5424`, `docker-mw` (default `rfc5424`)
 * `SYSLOG_HOSTNAME` - datum for hostname field (default `{{.Container.Config.Hostname}}`)
 * `SYSLOG_PID` - datum for pid field (default `{{.Container.State.Pid}}`)
 * `SYSLOG_PRIORITY` - datum for priority field (default `{{.Priority}}`)
@@ -186,6 +186,12 @@ If you use multiline logging with raw, it's recommended to json encode the Data 
 * `MULTILINE_PATTERN` - pattern for multiline logging, see: [MULTILINE_MATCH](#multiline_match) (default: `^\s`)
 * `MULTILINE_FLUSH_AFTER` - maximum time between the first and last lines of a multiline log entry in milliseconds (default: 500)
 * `MULTILINE_SEPARATOR` - separator between lines for output (default: `\n`)
+
+#### SYSLOG_FORMAT
+
+docker-mw add the name of Rancher environment and add this to SYSLOG_TAG sent to rsyslog: SYSLOG_TAG => (rancher environment name/SYSLOG_TAG)
+
+SYSLOG_FORMAT: ```<priority>timestamp hostname environmentName/tag pid data```
 
 #### Raw Format
 

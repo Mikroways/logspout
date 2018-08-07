@@ -14,7 +14,7 @@ import (
 	"syscall"
 	"text/template"
 	"time"
-
+	"net/http"
 	"github.com/gliderlabs/logspout/router"
 )
 
@@ -66,6 +66,24 @@ func getHostname() string {
 	return hostname
 }
 
+func getEnvironmentName() string {
+        resp, err := http.Get("http://rancher-metadata/2016-07-29/self/stack/environment_name")
+        var result string
+        if err != nil {
+          result = string("Undefined")
+        }
+        defer resp.Body.Close()
+        if resp.StatusCode == http.StatusOK {
+           bodyBytes, err2 := ioutil.ReadAll(resp.Body)
+           if err2 != nil {
+             result = string("Unknown")
+           } else {
+             result = string(bodyBytes)
+           }
+        }
+        return result
+}
+
 // NewSyslogAdapter returnas a configured syslog.Adapter
 func NewSyslogAdapter(route *router.Route) (router.LogAdapter, error) {
 	transport, found := router.AdapterTransports.Lookup(route.AdapterTransport("udp"))
@@ -81,7 +99,7 @@ func NewSyslogAdapter(route *router.Route) (router.LogAdapter, error) {
 	priority := getopt("SYSLOG_PRIORITY", "{{.Priority}}")
 	pid := getopt("SYSLOG_PID", "{{.Container.State.Pid}}")
 	hostname = getHostname()
-
+	environmentName := getEnvironmentName()
 	tag := getopt("SYSLOG_TAG", "{{.ContainerName}}"+route.Options["append_tag"])
 	structuredData := getopt("SYSLOG_STRUCTURED_DATA", "")
 	if route.Options["structured_data"] != "" {
@@ -104,6 +122,9 @@ func NewSyslogAdapter(route *router.Route) (router.LogAdapter, error) {
 	case "rfc3164":
 		tmplStr = fmt.Sprintf("<%s>%s %s %s[%s]: %s\n",
 			priority, timestamp, hostname, tag, pid, data)
+        case "docker-mw":
+                tmplStr = fmt.Sprintf("<%s>%s %s %s/%s %s %s\n",
+                        priority, timestamp, hostname, environmentName, tag, pid, data)
 	default:
 		return nil, errors.New("unsupported syslog format: " + format)
 	}
