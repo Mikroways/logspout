@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 if [[ $SYSLOG_SERVER_FORMAT -eq 0 ]]
