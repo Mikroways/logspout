@@ -1,5 +1,5 @@
 FROM alpine:3.7
-ENTRYPOINT ["/bin/logspout"]
+ENTRYPOINT ["/src/entrypoint.sh"]
 VOLUME /mnt/routes
 EXPOSE 80
 

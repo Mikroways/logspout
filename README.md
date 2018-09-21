@@ -186,6 +186,14 @@ If you use multiline logging with raw, it's recommended to json encode the Data 
 * `MULTILINE_PATTERN` - pattern for multiline logging, see: [MULTILINE_MATCH](#multiline_match) (default: `^\s`)
 * `MULTILINE_FLUSH_AFTER` - maximum time between the first and last lines of a multiline log entry in milliseconds (default: 500)
 * `MULTILINE_SEPARATOR` - separator between lines for output (default: `\n`)
+* `SYSLOG_SERVER_FORMAT` - syslog server
+
+#### SYSLOG_SERVER_FORMAT
+
+You must specify the protocol to be used and the server where the logs will be sent.
+Example:
+SYSLOG_SERVER_FORMAT=syslog+tcp://syslog-server.mikroways.net:514
+
 
 #### SYSLOG_FORMAT
 
